@@ -58,31 +58,13 @@ git clone <repository-url>
 cd stock-backtester
 ```
 
-2. **Create the project structure**
-
-```
-stock-backtester/
-├── backend/
-│   ├── main_enhanced.py
-│   ├── models.py
-│   ├── requirements.txt
-│   └── Dockerfile
-├── frontend/
-│   ├── app/
-│   │   └── page.tsx
-│   ├── package.json
-│   └── Dockerfile
-├── docker-compose.yml
-└── init.sql
-```
-
-3. **Start all services**
+2. **Start all services**
 
 ```bash
 docker-compose up -d
 ```
 
-4. **Access the application**
+3. **Access the application**
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
@@ -103,7 +85,7 @@ export DATABASE_URL="postgresql://user:password@localhost:5432/testdb"
 export SECRET_KEY="your-secret-key"
 
 # Run the server
-uvicorn main_enhanced:app --reload
+uvicorn main:app --reload
 ```
 
 ### Frontend Setup
@@ -234,7 +216,7 @@ sudo yum install python3.11 python3-pip postgresql-devel gcc -y
 git clone <repository-url>
 cd stock-backtester/backend
 pip3 install -r requirements.txt
-uvicorn main_enhanced:app --host 0.0.0.0 --port 8000
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 4. **Set up reverse proxy** with Nginx
@@ -252,7 +234,7 @@ uvicorn main_enhanced:app --host 0.0.0.0 --port 8000
 ```
 stock-backtester/
 ├── backend/
-│   ├── main_enhanced.py          # Enhanced FastAPI app with auth
+│   ├── main.py                   # FastAPI app with auth
 │   ├── models.py                 # Database models and repositories
 │   ├── requirements.txt          # Python dependencies
 │   ├── Dockerfile               # Backend container config
