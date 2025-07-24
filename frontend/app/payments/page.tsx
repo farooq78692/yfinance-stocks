@@ -20,7 +20,7 @@ export default function PaymentForm() {
     try {
       // Create payment intent
       const response = await fetch(
-        "http://localhost:8000/payment/create-intent",
+        `${process.env.NEXT_PUBLIC_API_URL}/payment/create-intent`,
         {
           method: "POST",
           headers: {

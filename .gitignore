@@ -56,3 +56,6 @@ Thumbs.db
 
 # Optional: Ignore root-level .env if present
 .env
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
