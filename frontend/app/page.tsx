@@ -105,6 +105,7 @@ export default function BacktesterPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
+        mode: "cors",
       });
 
       if (!response.ok) {

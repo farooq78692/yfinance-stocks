@@ -31,6 +31,7 @@ export default function PaymentForm() {
             amount: amount,
             currency: "usd",
           }),
+          mode: "cors",
         }
       );
 
