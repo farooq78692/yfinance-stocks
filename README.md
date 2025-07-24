@@ -55,7 +55,7 @@ A fullstack web application for backtesting simple moving average (SMA) based tr
 
 ```bash
 git clone <repository-url>
-cd stock-backtester
+cd yfinance-stocks
 ```
 
 2. **Start all services**
@@ -213,8 +213,8 @@ sudo yum install python3.11 python3-pip postgresql-devel gcc -y
 3. **Deploy application**:
 
 ```bash
-git clone <repository-url>
-cd stock-backtester/backend
+git clone https://github.com/farooq78692/yfinance-stocks
+cd yfinance-stocks/backend
 pip3 install -r requirements.txt
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
@@ -232,7 +232,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 ## 📁 Project Structure
 
 ```
-stock-backtester/
+yfinance-stocks/
 ├── backend/
 │   ├── main.py                   # FastAPI app with auth
 │   ├── models.py                 # Database models and repositories
