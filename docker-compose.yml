@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15
+    container_name: backtester_db
+    environment:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: testdb_owner
+      POSTGRES_PASSWORD: npg_RVKTehqBfF93
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testdb_owner -d testdb"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backtester_backend
+    environment:
+      DATABASE_URL: postgresql://testdb_owner:npg_RVKTehqBfF93@ep-flat-meadow-a5gzjtk7-pooler.us-east-2.aws.neon.tech/testdb?sslmode=require&channel_binding=require
+      SECRET_KEY: X7pL9qW3zT2rY8mF5vN0kJ6hB4nCFIAS
+      ACCESS_TOKEN_EXPIRE_MINUTES: 900
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: backtester_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_POSTHOG_KEY=phc_h8TQQdm1FG6N67GJuJqojj3p3PItrRr29FjFMONXWy7
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: backtester_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
