@@ -55,7 +55,7 @@ services:
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000
       - NEXT_PUBLIC_POSTHOG_KEY=phc_h8TQQdm1FG6N67GJuJqojj3p3PItrRr29FjFMONXWy7
-
+    command: sh -c "npm install && npm run dev"
   # Redis for caching (optional)
   redis:
     image: redis:7-alpine

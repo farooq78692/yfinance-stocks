@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth } from "@/components/auth";
+import { apiClient, useAuth } from "@/components/auth";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,6 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import axios from "axios";
 
 ChartJS.register(
   CategoryScale,
@@ -98,22 +99,13 @@ export default function BacktesterPage() {
     setError(null);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/backtest`, {
-        method: "POST",
+      const response = await apiClient.post("/backtest", formData, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
-        mode: "cors",
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Backtest failed");
-      }
-
-      const data = await response.json();
+      const data = response.data;
       setResults(data);
 
       // Log analytics event (PostHog placeholder)
@@ -124,8 +116,19 @@ export default function BacktesterPage() {
           number_of_trades: data.number_of_trades,
         });
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.detail || "Backtest failed";
+        setError(errorMessage);
+        console.error(
+          "Backtest error:",
+          error.response?.status,
+          error.response?.data
+        );
+      } else {
+        setError("An error occurred");
+        console.error("Backtest error:", error);
+      }
     } finally {
       setLoading(false);
     }

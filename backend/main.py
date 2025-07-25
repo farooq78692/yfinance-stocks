@@ -171,18 +171,6 @@ class SMAStrategy(bt.Strategy):
                 'pnl_net': trade.pnlcomm
             })
 
-# def download_stock_data(ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
-#     try:
-#         stock = yf.Ticker(ticker)
-#         print("Stock:", stock)
-#         data = stock.history(start=start_date, end=end_date)
-#         print("Data:", data)
-#         if data.empty:
-#             raise ValueError(f"No data found for ticker {ticker}")
-#         print("Downloaded data:", data.head())
-#         return data
-#     except Exception as e:
-#         raise HTTPException(status_code=400, detail=f"Error downloading data: {str(e)}")
 
 def download_stock_data(ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
     try:

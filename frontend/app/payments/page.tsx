@@ -1,6 +1,7 @@
 "use client";
 
-import { useAuth } from "@/components/auth";
+import { apiClient, useAuth } from "@/components/auth";
+import axios from "axios";
 import { useState } from "react";
 
 export default function PaymentForm() {
@@ -18,49 +19,49 @@ export default function PaymentForm() {
     setPaymentStatus("processing");
 
     try {
-      // Create payment intent
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/payment/create-intent`,
+      const response = await apiClient.post(
+        "/payment/create-intent",
         {
-          method: "POST",
+          amount: amount,
+          currency: "usd",
+        },
+        {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            amount: amount,
-            currency: "usd",
-          }),
-          mode: "cors",
         }
       );
 
-      if (response.ok) {
-        const paymentData = await response.json();
+      const paymentData = response.data;
 
-        // Simulate payment processing
-        setTimeout(() => {
-          setPaymentStatus("success");
-          setIsLoading(false);
-
-          // Log analytics event
-          if (typeof window !== "undefined" && (window as any).posthog) {
-            (window as any).posthog.capture("payment_completed", {
-              amount: amount,
-              currency: "usd",
-              user_id: user?.id,
-            });
-          }
-        }, 2000);
-
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 3000);
-      } else {
-        setPaymentStatus("error");
+      // Simulate payment processing
+      setTimeout(() => {
+        setPaymentStatus("success");
         setIsLoading(false);
-      }
+
+        // Log analytics event
+        if (typeof window !== "undefined" && (window as any).posthog) {
+          (window as any).posthog.capture("payment_completed", {
+            amount: amount,
+            currency: "usd",
+            user_id: user?.id,
+          });
+        }
+      }, 2000);
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 3000);
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Payment error:",
+          error.response?.status,
+          error.response?.data
+        );
+      } else {
+        console.error("Payment error:", error);
+      }
       setPaymentStatus("error");
       setIsLoading(false);
     }
