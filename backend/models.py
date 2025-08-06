@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 
 # Database configuration
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = "postgresql://testdb_owner:npg_RVKTehqBfF93@ep-flat-meadow-a5gzjtk7-pooler.us-east-2.aws.neon.tech/testdb?sslmode=require&channel_binding=require"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -114,7 +114,7 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import timedelta
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = "X7pL9qW3zT2rY8mF5vN0kJ6hB4nCFIAS"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
